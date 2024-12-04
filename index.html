@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrazione Docenti</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        #tastierino {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 200px;
+            margin: 20px auto;
+        }
+        .tasto {
+            padding: 20px;
+            font-size: 18px;
+            background-color: #ddd;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .tasto:active {
+            background-color: #bbb;
+        }
+        #code-display {
+            font-size: 24px;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            width: 200px;
+            text-align: center;
+            margin: 0 auto;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .entrata { background-color: green; color: white; }
+        .uscita { background-color: red; color: white; }
+        .invia { background-color: blue; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Benvenuto</h1>
+    <p>Inserisci il codice:</p>
+    <div id="code-display">_ _ _ _</div>
+    <div id="tastierino">
+        <button class="tasto" onclick="aggiungiNumero('1')">1</button>
+        <button class="tasto" onclick="aggiungiNumero('2')">2</button>
+        <button class="tasto" onclick="aggiungiNumero('3')">3</button>
+        <button class="tasto" onclick="aggiungiNumero('4')">4</button>
+        <button class="tasto" onclick="aggiungiNumero('5')">5</button>
+        <button class="tasto" onclick="aggiungiNumero('6')">6</button>
+        <button class="tasto" onclick="aggiungiNumero('7')">7</button>
+        <button class="tasto" onclick="aggiungiNumero('8')">8</button>
+        <button class="tasto" onclick="aggiungiNumero('9')">9</button>
+        <button class="tasto" onclick="cancellaNumero()">←</button>
+        <button class="tasto" onclick="aggiungiNumero('0')">0</button>
+    </div>
+    <button class="entrata" onclick="setMode('entrata')">Entrata</button>
+    <button class="uscita" onclick="setMode('uscita')">Uscita</button>
+    <button class="invia" onclick="submitCode()">Invia</button>
+
+    <script>
+        let mode = null;
+        let codice = '';
+        const docenti = {
+            400: "Enrico Dematteis",
+            401: "Alessia Dematteis",
+            402: "Budino Caramello",
+            403: "Piccky Pomodoro",
+            404: "Ananas Pippy",
+            405: "Spinaci Verdi",
+            406: "Gatto Rosa"
+        };
+
+        function aggiungiNumero(numero) {
+            if (codice.length < 4) {
+                codice += numero;
+                aggiornaDisplay();
+            }
+        }
+
+        function cancellaNumero() {
+            codice = codice.slice(0, -1);
+            aggiornaDisplay();
+        }
+
+        function aggiornaDisplay() {
+            const display = codice.padEnd(4, '_');
+            document.getElementById('code-display').textContent = display;
+        }
+
+        function setMode(selectedMode) {
+            mode = selectedMode;
+            alert(`Modalità ${mode === "entrata" ? "Entrata" : "Uscita"} selezionata.`);
+        }
+
+        function submitCode() {
+            if (!mode) {
+                alert("Seleziona prima una modalità (Entrata o Uscita).");
+                return;
+            }
+            const nome = docenti[codice];
+            if (nome) {
+                const message = mode === "entrata" 
+                    ? `Benvenuto ${nome}`
+                    : `Arrivederci ${nome}`;
+                alert(message);
+
+                const now = new Date();
+                const registro = {
+                    nome: nome,
+                    codice: codice,
+                    tipo: mode,
+                    data: now.toLocaleDateString(),
+                    ora: now.toLocaleTimeString()
+                };
+
+                saveToRegistro(registro);
+                window.location.href = "registro.html";
+            } else {
+                alert("Codice non valido.");
+            }
+            codice = '';
+            aggiornaDisplay();
+        }
+
+        function saveToRegistro(data) {
+            let registro = JSON.parse(localStorage.getItem("registroDocenti")) || [];
+            registro.push(data);
+            localStorage.setItem("registroDocenti", JSON.stringify(registro));
+        }
+
+        aggiornaDisplay();
+    </script>
+</body>
+</html>

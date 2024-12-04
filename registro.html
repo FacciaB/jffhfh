@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Docenti</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Registro Presenze</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nome e Cognome</th>
+                <th>Codice</th>
+                <th>Tipo</th>
+                <th>Data</th>
+                <th>Ora</th>
+            </tr>
+        </thead>
+        <tbody id="registro"></tbody>
+    </table>
+
+    <script>
+        function loadRegistro() {
+            const registro = JSON.parse(localStorage.getItem("registroDocenti")) || [];
+            const tbody = document.getElementById("registro");
+
+            registro.forEach(entry => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${entry.nome}</td>
+                    <td>${entry.codice}</td>
+                    <td>${entry.tipo.charAt(0).toUpperCase() + entry.tipo.slice(1)}</td>
+                    <td>${entry.data}</td>
+                    <td>${entry.ora}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        loadRegistro();
+    </script>
+</body>
+</html>
